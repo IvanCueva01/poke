@@ -1,5 +1,7 @@
+// app/pokemones/[id]/page.tsx
 import Image from "next/image";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 
 type PokemonData = {
   name: string;
@@ -9,20 +11,25 @@ type PokemonData = {
   // Agrega otros campos según lo necesites
 };
 
-export default async function PokemonPage({
-  params,
-}: {
-  params: { id: string };
-}) {
-  const response = await fetch(
-    `https://pokeapi.co/api/v2/pokemon/${params.id}`
-  );
+interface PageProps {
+  params: {
+    id: string;
+  };
+}
+
+export default async function PokemonPage({ params }: PageProps) {
+  const { id } = await params;
+  const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+
+  if (!response.ok) {
+    return <div>No se pudo cargar el Pokémon.</div>;
+  }
+
   const data: PokemonData = await response.json();
+
   return (
     <div>
-      <h1>
-        {data.name} #{params.id}
-      </h1>
+      <h1>{data.name}</h1>
       <Image
         src={data.sprites.front_default}
         alt={data.name}
@@ -32,4 +39,16 @@ export default async function PokemonPage({
       <Link href="/">Volver al inicio</Link>
     </div>
   );
+}
+
+export async function generateMetadata({ params }: PageProps) {
+  const { id } = params;
+
+  const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+  const data: PokemonData = await response.json();
+
+  return {
+    title: `Pokémon: ${data.name}`,
+    description: `Detalles sobre el Pokémon ${data.name}`,
+  };
 }
