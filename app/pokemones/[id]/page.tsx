@@ -40,15 +40,3 @@ export default async function PokemonPage({ params }: PageProps) {
     </div>
   );
 }
-
-export async function generateMetadata({ params }: PageProps) {
-  const { id } = params;
-
-  const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
-  const data: PokemonData = await response.json();
-
-  return {
-    title: `Pokémon: ${data.name}`,
-    description: `Detalles sobre el Pokémon ${data.name}`,
-  };
-}
