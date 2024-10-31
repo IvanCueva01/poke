@@ -1,7 +1,6 @@
 // app/pokemones/[id]/page.tsx
 import Image from "next/image";
 import Link from "next/link";
-import { useParams } from "next/navigation";
 
 type PokemonData = {
   name: string;
